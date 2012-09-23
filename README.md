@@ -3,7 +3,7 @@ sm16716
 
 An Arduino controller for LED strings based on the SM16716 controller.
 
-By [Mike Tsao](github.com/sowbug). Copyright 2012, all rights reserved.
+By [Mike Tsao](http://github.com/sowbug). Copyright 2012, all rights reserved.
  
 You might see these being sold as WS2801 strands, and you're wondering why your off-the-shelf WS2801 code isn't working. This sketch will restore your confidence that your lights aren't broken.
  
