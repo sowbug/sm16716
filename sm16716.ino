@@ -107,25 +107,82 @@ static uint32_t rand_color() {
   return simple_color(rand() % 7);
 }
 
+static uint32_t rand_color_except(uint32_t color) {
+  uint32_t result_color;
+  do {
+    result_color = simple_color(rand() % 7);
+  } while (result_color == color);
+  return result_color;
+}
+
 static uint32_t get_dimmer_mask(uint32_t value) {
   return value | (value << 8) | (value << 16);
 }
 
+static void scroll(int8_t delta) {
+  size_t bytes_to_move = (LIGHT_COUNT - delta) * sizeof(uint32_t);
+  if (delta > 0) {
+    memmove(&pixels[delta], &pixels[0], bytes_to_move);
+  } else {
+    memmove(&pixels[0], &pixels[-delta], bytes_to_move);
+  }
+}
+
+static void wipe(uint8_t delay_msec) {
+  for (int i = 0; i < LIGHT_COUNT; ++i) {
+    scroll(1);
+    set_pixel(0, 0);
+    show();
+    delay(delay_msec);
+  }
+}
+
 void loop() {
+  uint32_t color = 0;
+
   for (int i = 0; i < 7; ++i) {
     solid_color(simple_color(i));
     show();
     delay(1000);
   }
 
-  uint32_t color = 0;
+  for (int i = 0; i < LIGHT_COUNT * 10; ++i) {
+    set_pixel(rand() % LIGHT_COUNT, rand_color());
+    show();
+    delay(50);
+  }
+
+  for (int i = 0; i < LIGHT_COUNT * 10; ++i) {
+    scroll(1);
+    set_pixel(0, rand_color());
+    show();
+    delay(100);
+  }
+  wipe(25);
+
+  for (int i = 0; i < LIGHT_COUNT * 4; ++i) {
+    color = rand_color_except(color);
+    for (int j = 0; j < 5; ++j) {
+      scroll(1);
+      set_pixel(0, color);
+      show();
+      delay(25);
+    }
+  }
+
+  for (int i = 0; i < LIGHT_COUNT * 4; ++i) {
+    color = rand_color_except(color);
+    for (int j = 0; j < 8; ++j) {
+      scroll(-1);
+      set_pixel(LIGHT_COUNT - 1, color);
+      show();
+      delay(5);
+    }
+  }
+
+
   for (int j = 0; j < 16; ++j) {
-    uint32_t old_color = color;
-    do {
-      old_color = color;
-      color = rand_color();
-    } 
-    while (old_color == color);
+    color = rand_color_except(color);
     for (int i = 0; i < LIGHT_COUNT; ++i) {
       set_pixel(i, color);
       show();
@@ -145,5 +202,4 @@ void loop() {
     }
   }
 }
-
 
