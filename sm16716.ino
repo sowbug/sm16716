@@ -146,6 +146,23 @@ void loop() {
     delay(1000);
   }
 
+  // Halloween
+  for (int i = 0; i < LIGHT_COUNT * 4; ++i) {
+    uint8_t r = rand() % 10;
+    color = 0;
+    if (r < 7) {
+    } else if (r < 8) {
+      color = 0x00ff1f00;  // orange
+    } else {
+      color = 0x00002f00;  // green
+    }
+    scroll(1);
+    set_pixel(0, color);
+    show();
+    delay(75);
+  }
+  wipe(75);
+
   for (int i = 0; i < LIGHT_COUNT * 10; ++i) {
     set_pixel(rand() % LIGHT_COUNT, rand_color());
     show();
@@ -180,7 +197,6 @@ void loop() {
     }
   }
 
-
   for (int j = 0; j < 16; ++j) {
     color = rand_color_except(color);
     for (int i = 0; i < LIGHT_COUNT; ++i) {
@@ -202,4 +218,3 @@ void loop() {
     }
   }
 }
-
